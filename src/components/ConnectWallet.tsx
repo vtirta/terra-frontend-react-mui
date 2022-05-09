@@ -1,12 +1,20 @@
-import * as React from 'react';
-import {useWallet, WalletStatus} from '@terra-money/wallet-provider';
+import React, {useEffect, useState} from 'react';
+import {Coins, Coin} from "@terra-money/terra.js";
+import {useConnectedWallet, useLCDClient, useWallet, WalletStatus} from '@terra-money/wallet-provider';
 
-import {Fab, ListItemIcon, ListItemText, Menu, MenuItem} from '@mui/material';
+import {ButtonGroup, Button, Fab, ListItemIcon, ListItemText, Menu, MenuItem} from '@mui/material';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
+
+import './ConnectWallet.css';
 import StationIcon from '../img/station.svg';
-import Button from "@mui/material/Button";
+import TerraIcon from '../img/terra-logo-only-small.svg';
+
+const formatWalletAddress = (s: string) => {
+    return s.slice(5, 10) + '...' + s.slice(39);
+}
 
 const ConnectWallet = () => {
+
     const {
         status,
         network,
@@ -19,14 +27,24 @@ const ConnectWallet = () => {
         install,
         disconnect,
     } = useWallet();
+    const connectedWallet = useConnectedWallet();
+    const lcd = useLCDClient();
+    const [bank, setBank] = useState<Coins | null>();
+    useEffect(() => {
+        if (connectedWallet) {
+            lcd.bank.balance(connectedWallet.walletAddress).then(([coins]) => {
+                setBank(coins);
+            });
+        } else {
+            setBank(null);
+        }
+    }, [connectedWallet, lcd]);
 
-    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
-
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
     };
-
     const handleClose = () => {
         setAnchorEl(null);
     };
@@ -38,6 +56,19 @@ const ConnectWallet = () => {
                     <AccountBalanceWalletIcon sx={{mr: 1}}/>
                     Connect wallet
                 </Fab>
+            )}
+            {status !== WalletStatus.WALLET_NOT_CONNECTED && (
+                <ButtonGroup className="connected-wallet-btn" variant="contained"
+                             aria-label="outlined primary button group">
+                    <Button>
+                        <img src={TerraIcon} width={25} alt={'Terra icon'}/>
+                        {wallets && wallets.length > 0 ? formatWalletAddress(wallets[0].terraAddress) : ''}
+                    </Button>
+                    <Button>
+                        <span style={{marginRight: 10}}>UST</span>
+                        <span>{bank?.get("uusd")?.amount.dividedBy(1000000).toFixed(2) || "0.00"}</span>
+                    </Button>
+                </ButtonGroup>
             )}
             <Menu
                 id="basic-menu"
@@ -65,13 +96,13 @@ const ConnectWallet = () => {
                     </MenuItem>
                 ))}
                 {availableConnections.map(
-                    ({ type, name, icon, identifier = '' }) => (
+                    ({type, name, icon, identifier = ''}) => (
                         <MenuItem key={'connection-' + type + identifier} onClick={() => connect(type, identifier)}>
                             <ListItemIcon>
                                 <img
                                     src={icon}
                                     alt={name}
-                                    style={{ width: '1em', height: '1em' }}
+                                    style={{width: '1em', height: '1em'}}
                                 />
                             </ListItemIcon>
                             <ListItemText>{name} [{identifier}]</ListItemText>
