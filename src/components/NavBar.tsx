@@ -103,7 +103,6 @@ const NavBar = () => {
 
                     <ConnectWallet/>
 
-
                 </Toolbar>
             </Container>
         </AppBar>

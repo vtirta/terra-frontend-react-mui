@@ -1,16 +1,15 @@
 import React from 'react';
-import {ConnectSample} from './components/ConnectSample';
-import {CW20TokensSample} from './components/CW20TokensSample';
-import {NetworkSample} from './components/NetworkSample';
-import {QuerySample} from './components/QuerySample';
-import {SignBytesSample} from './components/SignBytesSample';
-import {SignSample} from './components/SignSample';
-import {TxSample} from './components/TxSample';
-
-import Container from '@mui/material/Container';
-import NavBar from './components/NavBar';
-
+import {Card, CardContent, Container} from "@mui/material";
 import {ThemeProvider, createTheme} from '@mui/material/styles';
+// import {ConnectSample} from './components/ConnectSample';
+// import {CW20TokensSample} from './components/CW20TokensSample';
+// import {NetworkSample} from './components/NetworkSample';
+// import {QuerySample} from './components/QuerySample';
+// import {SignBytesSample} from './components/SignBytesSample';
+// import {SignSample} from './components/SignSample';
+// import {TxSample} from './components/TxSample';
+import NavBar from './components/NavBar';
+import WalletHoldingsWidget from "./components/WalletHoldingsWidget";
 
 import CssBaseline from '@mui/material/CssBaseline';
 import './App.css';
@@ -40,14 +39,19 @@ function App() {
         <ThemeProvider theme={darkTheme}>
             <CssBaseline/>
             <NavBar/>
-            <Container>
-                <ConnectSample/>
-                <QuerySample/>
-                <TxSample/>
-                <SignSample/>
-                <SignBytesSample/>
-                <CW20TokensSample/>
-                <NetworkSample/>
+            <Container sx={{paddingTop: 10}}>
+                <Card sx={{minWidth: 200, maxWidth: 400}}>
+                    <CardContent>
+                        <WalletHoldingsWidget/>
+                    </CardContent>
+                </Card>
+                {/*<ConnectSample/>*/}
+                {/*<QuerySample/>*/}
+                {/*<TxSample/>*/}
+                {/*<SignSample/>*/}
+                {/*<SignBytesSample/>*/}
+                {/*<CW20TokensSample/>*/}
+                {/*<NetworkSample/>*/}
             </Container>
         </ThemeProvider>
     );
