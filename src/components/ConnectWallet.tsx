@@ -18,6 +18,8 @@ import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import './ConnectWallet.css';
 import StationIcon from '../img/station.svg';
 import TerraIcon from '../img/terra-logo-only-small.svg';
+import WalletConnectIcon from '../img/wallet-connect-icon.svg';
+import GenericWalletIcon from '../img/generic-wallet.svg';
 import WalletHoldings from "./WalletHoldings";
 
 const formatWalletAddress = (s: string) => {
@@ -121,6 +123,17 @@ const ConnectWallet = () => {
         }
     }
 
+    const walletIcon = (connectType: string) => {
+        switch (connectType) {
+            case 'EXTENSION':
+                return StationIcon;
+            case 'WALLETCONNECT':
+                return WalletConnectIcon;
+            default:
+                return GenericWalletIcon;
+        }
+    }
+
     return (
         <div>
             {status === WalletStatus.WALLET_NOT_CONNECTED && (
@@ -144,7 +157,7 @@ const ConnectWallet = () => {
                 {availableInstallTypes.map((connectType) => (
                     <MenuItem key={'install-' + connectType} onClick={() => install(connectType)}>
                         <ListItemIcon>
-                            <img src={StationIcon} alt="Terra Station Wallet Icon" width={25}/>
+                            <img src={walletIcon(connectType)} alt="Terra Station Wallet Icon" width={25}/>
                         </ListItemIcon>
                         <ListItemText>Install {formatWalletName(connectType)}</ListItemText>
                     </MenuItem>
@@ -155,7 +168,7 @@ const ConnectWallet = () => {
                         setAnchorEl(null);
                     }}>
                         <ListItemIcon>
-                            <img src={StationIcon} alt="Terra Station Wallet Icon" width={25}/>
+                            <img src={walletIcon(connectType)} alt="Terra Station Wallet Icon" width={25}/>
                         </ListItemIcon>
                         <ListItemText>{formatWalletName(connectType)}</ListItemText>
                     </MenuItem>
